@@ -21,6 +21,7 @@ class SimplePingAdapter: NSObject, SimplePingDelegate {
     fileprivate var pinger:SimplePing!
     fileprivate var timeoutTimer:Timer?
     fileprivate var timeoutDuration:TimeInterval = 3
+    private(set) var lastResolvedIp: String?
 
     func startPing(_ hostName: String, timeout:TimeInterval = 3) {
         timeoutDuration = timeout
@@ -58,6 +59,14 @@ class SimplePingAdapter: NSObject, SimplePingDelegate {
     func simplePing(_ pinger: SimplePing, didStartWithAddress address: Data) {
         timeoutTimer = Timer.scheduledTimer(timeInterval: timeoutDuration, target: self, selector: #selector(timeout), userInfo: nil, repeats: false)
         pinger.send(with: nil)
+
+        var name = [CChar](repeating: 0, count: Int(NI_MAXHOST))
+        let saLen = socklen_t(address.count)
+        address.withUnsafeBytes { (sa: UnsafePointer<sockaddr>) in
+            if getnameinfo(sa, saLen, &name, socklen_t(name.count), nil, 0, NI_NUMERICHOST | NI_NUMERICSERV) == 0 {
+                self.lastResolvedIp = String(cString: name)
+            }
+        }
     }
     
     func simplePing(_ pinger: SimplePing, didSendPacket packet: Data, sequenceNumber: UInt16) {
