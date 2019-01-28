@@ -16,7 +16,8 @@ class ViewController: UIViewController {
     
     @IBAction func pingButtonPressed(_ sender: UIButton) {
         
-        PlainPing.ping("www.google.com", withTimeout: 1.0, completionBlock: { (timeElapsed:Double?, error:Error?) in
+        PlainPing.ping("www.google.com", withTimeout: 1.0, completionBlock: { (timeElapsed:Double?, error:Error?, address: String?) in
+            print(address ?? "<no address is resolved>")
             if let latency = timeElapsed {
                 self.pingResultLabel.text = "latency (ms): \(latency)"
             }

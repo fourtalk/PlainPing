@@ -14,7 +14,7 @@ open class PlainPing: SimplePingAdapterDelegate {
     fileprivate var pingAdapter:SimplePingAdapter!
     
     /// completion of a ping
-    public typealias PlainPingCompletion = (_ elapsedTimeMs: Double?, _ error:Error?) -> ()
+    public typealias PlainPingCompletion = (_ elapsedTimeMs: Double?, _ error: Error?, _ resolvedIpAddress: String?) -> ()
     fileprivate var completionBlock: PlainPingCompletion!
     
     // MARK: - main work
@@ -38,9 +38,9 @@ open class PlainPing: SimplePingAdapterDelegate {
     fileprivate func finalizePing(_ latency:TimeInterval? = nil, error:Error? = nil) {
         if let latency = latency {
             let elapsedTimeMs = latency*1000
-            self.completionBlock?(elapsedTimeMs, error)
+            self.completionBlock?(elapsedTimeMs, error, pingAdapter.lastResolvedIp)
         } else {
-            self.completionBlock?(nil, error)
+            self.completionBlock?(nil, error, pingAdapter.lastResolvedIp)
         }
         pingAdapter.delegate = nil
         pingAdapter = nil

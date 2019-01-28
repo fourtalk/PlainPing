@@ -20,7 +20,7 @@ class Tests: XCTestCase {
         
         let readyExpectation = expectation(description: "ready")
         
-        PlainPing.ping(url, withTimeout: timeout, completionBlock: { (timeElapsed:Double?, error:Error?) in
+        PlainPing.ping(url, withTimeout: timeout, completionBlock: { (timeElapsed:Double?, error:Error?, address: String?) in
             XCTAssertNotNil(timeElapsed)
             XCTAssertLessThanOrEqual(timeElapsed!/1000, timeout)
             XCTAssertNil(error)
@@ -40,7 +40,7 @@ class Tests: XCTestCase {
         
         let readyExpectation = expectation(description: "ready")
         
-        PlainPing.ping(url, withTimeout: timeout, completionBlock: { (timeElapsed:Double?, error:Error?) in
+        PlainPing.ping(url, withTimeout: timeout, completionBlock: { (timeElapsed:Double?, error:Error?, address: String?) in
             XCTAssertNil(timeElapsed)
             XCTAssertNotNil(error)
             
